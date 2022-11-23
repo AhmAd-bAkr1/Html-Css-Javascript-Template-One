@@ -1,95 +1,166 @@
-// call up the imgs in slider
-let sliderImges = Array.from(
-  document.querySelectorAll(".slider-container img")
-);
-let slidersCount = sliderImges.length;
-let currentIndex = 1;
+let count = document.querySelector(".count span");
+let spans = document.querySelector(".bullets .spans");
+let bullets = document.querySelector(".bullets");
+let quizArea = document.querySelector(".quiz-area ");
+let quizInfo = document.querySelector(".quiz-info ");
+let ansewrsArea = document.querySelector(".ansewrs-area");
+let submitButtn = document.querySelector("#submit-buttn");
+let results = document.querySelector(".results");
+let countdown = document.querySelector(".countdown");
+let curentIndex = 0;
+let rightAnswers = 0;
+let CountDown;
 
-// call up the slider-numbers
-let sliderNumber = document.getElementById("slider-numbers");
+function getQuestions() {
+    let Request = new XMLHttpRequest();
+    Request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            let questions = JSON.parse(this.responseText);
+            let questionsCount = questions.length;
 
-// call up the indicators
+            CreatBallets(questionsCount);
 
-let indicators = document.getElementById("indicators");
+            AddData(questions[curentIndex], questionsCount);
 
-// Create ul
+            Timer(60, questionsCount);
 
-let ulCreated = document.createElement("ul");
-ulCreated.setAttribute("id", "ulCreated");
+            submitButtn.addEventListener("click", function () {
+                let rightAnswer = questions[curentIndex].right_answer;
 
-// Create li
-for (let i = 1; i <= slidersCount; i++) {
-  let liCreated = document.createElement("li");
-  liCreated.setAttribute("data-index", i);
-  let textLiCreated = document.createTextNode(i);
-  liCreated.appendChild(textLiCreated);
-  ulCreated.appendChild(liCreated);
+                cheackAnswer(rightAnswer, questionsCount);
+
+                curentIndex++;
+
+                console.log(curentIndex);
+
+                quizArea.innerHTML = "";
+
+                ansewrsArea.innerHTML = "";
+
+                AddData(questions[curentIndex], questionsCount);
+
+                HandelBallets();
+
+                clearInterval(CountDown);
+
+                Timer(60, questionsCount);
+
+                theResults(questionsCount);
+            });
+        }
+    };
+    Request.open("GET", "quis.json", true);
+    Request.send();
 }
-indicators.appendChild(ulCreated);
+getQuestions();
 
-// call up the prev and next buttons
-let prev = document.getElementById("prev");
-let next = document.getElementById("next");
+function CreatBallets(num) {
+    count.innerHTML = num;
 
-next.addEventListener("click", nextSlid);
-prev.addEventListener("click", prevSlid);
+    for (let i = 0; i < num; i++) {
+        let spanCount = document.createElement("span");
+        spans.appendChild(spanCount);
 
-// call up the ulCreated
-
-let ulCreatedCall = document.getElementById("ulCreated");
-// create the ulCreated Arry
-
-let arryUlCreatedCall = Array.from(ulCreatedCall.children);
-arryUlCreatedCall.forEach(function (ele) {
-  ele.addEventListener("click", function (params) {
-    currentIndex = Number(ele.getAttribute("data-index"));
-    cheaker();
-  });
-});
-cheaker();
-function nextSlid(ele) {
-  if (next.classList.contains("disabled")) {
-    return false;
-  } else {
-    currentIndex++;
-    cheaker();
-  }
-}
-function prevSlid(ele) {
-  if (prev.classList.contains("disabled")) {
-    return false;
-  } else {
-    currentIndex--;
-    cheaker();
-  }
-}
-
-function cheaker(params) {
-  sliderNumber.textContent = `Slide ${currentIndex} Of ${slidersCount}`;
-
-  removeAll();
-
-  sliderImges[currentIndex - 1].classList.add("active");
-  ulCreatedCall.children[currentIndex - 1].classList.add("active");
-
-  if (currentIndex === 1) {
-    prev.classList.add("disabled");
-  } else {
-    prev.classList.remove("disabled");
-  }
-  if (currentIndex === slidersCount) {
-    next.classList.add("disabled");
-  } else {
-    next.classList.remove("disabled");
-  }
+        if (i === 0) {
+            spanCount.className = "on";
+        }
+    }
 }
 
-function removeAll(params) {
-  sliderImges.forEach(function (ele) {
-    ele.classList.remove("active");
-  });
+function AddData(obj, qCount) {
+    if (curentIndex < qCount) {
+        let Titel = document.createElement("h2");
+        let TitelName = document.createTextNode(obj["title"]);
+        Titel.append(TitelName);
+        quizArea.appendChild(Titel);
 
-  arryUlCreatedCall.forEach(function (ele) {
-    ele.classList.remove("active");
-  });
+        for (let i = 1; i < 4; i++) {
+            let mainDiv = document.createElement("div");
+            mainDiv.className = "answer";
+
+            let mainInput = document.createElement("input");
+            mainInput.type = "radio";
+            mainInput.id = `answer-${i}`;
+            mainInput.name = "answer";
+            mainInput.dataset.answer = obj[`answer_${i}`];
+
+            let mainLabl = document.createElement("label");
+            mainLabl.htmlFor = `answer-${i}`;
+            let laplText = document.createTextNode(mainInput.dataset.answer);
+            mainLabl.appendChild(laplText);
+            mainDiv.appendChild(mainInput);
+            mainDiv.appendChild(mainLabl);
+            ansewrsArea.appendChild(mainDiv);
+        }
+    }
+}
+
+function cheackAnswer(ra, qc) {
+    let ansewrs = document.getElementsByName("answer");
+    let theChoosenAnswer;
+    for (let i = 0; i < 3; i++) {
+        if (ansewrs[i].checked) {
+            theChoosenAnswer = ansewrs[i].dataset.answer;
+        }
+    }
+    console.log(`right : ${ra}`);
+    console.log(`Choosen : ${theChoosenAnswer}`);
+    if (ra === theChoosenAnswer) {
+        rightAnswers++;
+        console.log("good");
+        console.log(rightAnswers);
+    }
+}
+
+function HandelBallets() {
+    let spanBullets = document.querySelectorAll(".bullets .spans span");
+    let arrspanBullets = Array.from(spanBullets);
+    arrspanBullets.forEach((span, index) => {
+        if (curentIndex === index) {
+            span.className = "on";
+            console.log(span);
+        }
+    });
+}
+
+function theResults(count) {
+    let Results = " ";
+    if (curentIndex === count) {
+        ansewrsArea.remove();
+        quizArea.remove();
+        submitButtn.remove();
+        bullets.remove();
+        if (rightAnswers > count / 2 && rightAnswers < count) {
+            Results = `<span class ="good">Good</span> you did what you could your score is ${rightAnswers} from ${count}`;
+        } else if (rightAnswers === count) {
+            Results = `<span class ="perfect">Congratulations</span> you are Genius`;
+        } else {
+            Results = `<span class ="bad">Bad</span> you did what you could your score is ${rightAnswers} from ${count}`;
+        }
+    }
+    results.innerHTML = Results;
+
+    results.style.padding = "10px";
+    results.style.backgroundColor = "white";
+    results.style.marginTop = "10px";
+}
+
+function Timer(duration, count) {
+    if (curentIndex < count) {
+        let minuts, seconds;
+        CountDown = setInterval(() => {
+            minuts = parseInt(duration / 60);
+            seconds = parseInt(duration % 60);
+            minuts = minuts < 10 ? `0${minuts}` : minuts;
+            seconds = seconds < 10 ? `0${seconds}` : seconds;
+            countdown.innerHTML = `${minuts} : ${seconds}`;
+
+            if (--duration < 0) {
+                clearInterval(CountDown);
+                console.log("fionished");
+                submitButtn.click();
+                duration = 5;
+            }
+        }, 1000);
+    }
 }

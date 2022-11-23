@@ -1,83 +1,118 @@
 *{
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 body{
-    font-family: Tahoma, Arial;
+    font-family:  Tahoma , Arial;
 }
-.slider-container{
-    margin: 10px auto;
-    max-width: 800px;
-    height: 400px; 
-    position: relative;
 
+.container{
+    margin: 20px auto;
+    width: 800px;
+    background-color: #f8f8f8;
+    padding: 15px;
 }
-.slider-container .slider-numbers{
-    position: absolute;
-    z-index: 5;
-    top: 15px;
-    left: 15px;
-    background-color: rgba(65, 105, 225, 0.578);
-    padding: 10px;
-    color: white;
-    border-radius: 10px;
-    font-size: 20px;
-    font-weight: bold;
-}
-.slider-container img{
-    position: absolute;
-    width:100%;
-    height: 100%;
-    padding: 3px;
-    z-index: 1;
-    opacity: 0;
-    transition: all 0.7s; 
-    border-radius:10px;
-}
-.slider-container img.active{
-opacity: 1;
-}
-.slider-controls{
-    margin:3px auto;
-    max-width: 800px;
+
+.container .quiz-info {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: #fff;
+    padding: 20px;
 }
 
-.slider-controls .next , .slider-controls .prev{
-    padding: 10px;
-    width:20%;
-    text-align: center;
-    background-color: royalblue;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
+.container .quiz-info .category{
+    flex: 1;
+     
 }
-.slider-controls .next.disabled , .slider-controls .prev.disabled{
-    opacity: 0.5;
-    cursor: no-drop;
+
+.container .quiz-info .count{
+flex: 1;
+text-align: right;
 }
-.slider-controls .indicators{
-    width: 55%;
+
+.container .quiz-area {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 15px;
+    
 }
-.slider-controls .indicators ul {
-    list-style: none;
+.container .quiz-area h2 {
     margin: 0;
-    text-align: center;
-    display: flex;
-    justify-content: space-around;
+    font-size: 30px;
 }
-.slider-controls .indicators ul li {
-    background-color:#f6f6f6;
-    color: #333;
-    padding:10px 15px;
-    font-size: 18px;
-    border-radius: 5px;
+.container .quiz-area .ansewrs-area{
+    background-color: #fff;
+    padding: 20px;
+}
+
+.container .ansewrs-area .answer{
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.container .ansewrs-area .answer:not(:last-child){
+    border-bottom: 1px solid #dfdfdf;
+}
+.container .ansewrs-area .answer input[type="Radio"]:checked + label{
+    color:#0075ff;
+}
+.container .ansewrs-area .answer label{
     cursor: pointer;
+    font-weight:bold;
+    color: #777;
+    font-size: 15px;
+    margin-left: 5px;
+    position: relative;
+    top: -2px;
 }
-.slider-controls .indicators ul li.active{
-    background-color: royalblue;
-    color: white;
+.container #submit-buttn {
+    background-color: #0075ff;
+    display: block;
+    width: 90%;
+    padding: 10px 15px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px ;
+    font-size: 18px;
+    color: #fff;
+    margin: 10px auto;
+}
+.container .bullets {
+    border-top: 1px solid #dfdfdf;
+    background-color: #fff;
+    display: flex;
+    padding: 20px;
+}
+
+.container .bullets .spans{
+    flex: 1;
+    display: flex;
+
+}
+.container .bullets .spans span{
+    width: 20px;
+    height: 20px;
+    background-color: #eee;
+    margin-right: 5px;
+    border-radius: 10px;
+}
+
+.container .bullets .spans span.on{
+    background-color: #0075ff;
+}
+.container .results span{
+font-weight: bold;
+margin-left: 15px ;
+
+}
+.container .results span.perfect{
+color: #0075ff; 
+
+}
+.container .results span.good{
+color:#009688 ;
+
+}
+.container .results span.bad{
+color:#dc0a0a;
+
 }
